@@ -40,7 +40,7 @@ export class BullMqServer extends Server implements CustomTransportStrategy {
         const worker = this.workerFactory.create(
           pattern,
           async (job: Job) => {
-            const value = await handler(job.data.payload, job);
+            const value = await handler(job.data, job);
             return new Promise((resolve, reject) => {
               const stream$ = this.transformToObservable(value).pipe(
                 catchError((err) => of(err)),

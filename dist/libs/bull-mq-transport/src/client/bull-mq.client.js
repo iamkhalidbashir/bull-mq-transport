@@ -50,19 +50,13 @@ let BullMqClient = class BullMqClient extends microservices_1.ClientProxy {
             isDisposed: true,
         }));
         queue
-            .add(packet.pattern, packet.data, {
-            jobId: packet.data.id,
-            delay: packet.data.delay,
-        })
+            .add(packet.pattern, packet.data.payload, packet.data.jobOptions)
             .then(async (job) => await job.waitUntilFinished(events));
         return () => events.close().then();
     }
     async dispatchEvent(packet) {
         const queue = this.getQueue(packet.pattern);
-        await queue.add(packet.pattern, packet.data, {
-            jobId: packet.data.id,
-            delay: packet.data.delay,
-        });
+        await queue.add(packet.pattern, packet.data.payload, packet.data.jobOptions);
     }
     getQueue(pattern) {
         var _a;

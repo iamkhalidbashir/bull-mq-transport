@@ -42,7 +42,7 @@ let BullMqServer = class BullMqServer extends microservices_1.Server {
                     connection: this.options.connection,
                 });
                 const worker = this.workerFactory.create(pattern, async (job) => {
-                    const value = await handler(job.data.payload, job);
+                    const value = await handler(job.data, job);
                     return new Promise((resolve, reject) => {
                         const stream$ = this.transformToObservable(value).pipe(operators_1.catchError((err) => rxjs_1.of(err)));
                         this.send(stream$, (packet) => {

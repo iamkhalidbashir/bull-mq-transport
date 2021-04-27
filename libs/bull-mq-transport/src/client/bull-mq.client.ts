@@ -53,10 +53,7 @@ export class BullMqClient extends ClientProxy {
       }),
     );
     queue
-      .add(packet.pattern, packet.data, {
-        jobId: packet.data.id,
-        delay: packet.data.delay,
-      })
+      .add(packet.pattern, packet.data.payload, packet.data.jobOptions)
       .then(async (job) => await job.waitUntilFinished(events));
     return () => events.close().then();
   }
@@ -65,10 +62,11 @@ export class BullMqClient extends ClientProxy {
     packet: ReadPacket<IBullMqEvent<any>>,
   ): Promise<any> {
     const queue = this.getQueue(packet.pattern);
-    await queue.add(packet.pattern, packet.data, {
-      jobId: packet.data.id,
-      delay: packet.data.delay,
-    });
+    await queue.add(
+      packet.pattern,
+      packet.data.payload,
+      packet.data.jobOptions,
+    );
   }
 
   protected getQueue(pattern: any): Queue {
